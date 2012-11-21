@@ -429,7 +429,7 @@ NSString * const PXSLDeleteKeyPressedOnRowsNotification = @"PXSourceListDeleteKe
 			NSRect cellFrame = [self frameOfCellAtColumn:0 row:rowIndex];
 			NSSize iconSize = [self iconSize];
 			NSRect iconRect = NSMakeRect(NSMinX(cellFrame)-iconSize.width-ICON_SPACING,
-										 NSMidY(cellFrame)-(iconSize.width/2.0f),
+										 NSMidY(cellFrame)-(iconSize.height/2.0f),
 										 iconSize.width,
 										 iconSize.height);
 			
@@ -748,6 +748,37 @@ NSString * const PXSLDeleteKeyPressedOnRowsNotification = @"PXSourceListDeleteKe
 	return nil;
 }
 
+#pragma mark 10.7 only methods
+
+- (id <NSPasteboardWriting>)outlineView:(NSOutlineView *)outlineView pasteboardWriterForItem:(id)item
+{
+    if ([_secondaryDataSource respondsToSelector:@selector(sourceList:pasteboardWriterForItem:)]) {
+        return [_secondaryDataSource sourceList:self pasteboardWriterForItem:item];
+    }
+
+    return nil;
+}
+- (void)outlineView:(NSOutlineView *)outlineView draggingSession:(NSDraggingSession *)session willBeginAtPoint:(NSPoint)screenPoint forItems:(NSArray *)draggedItems
+{
+    if ([_secondaryDataSource respondsToSelector:@selector(sourceList:draggingSession:willBeginAtPoint:forItems:)]) {
+        return [_secondaryDataSource sourceList:self draggingSession:session willBeginAtPoint:screenPoint forItems:draggedItems];
+    }
+    
+}
+
+- (void)outlineView:(NSOutlineView *)outlineView draggingSession:(NSDraggingSession *)session endedAtPoint:(NSPoint)screenPoint operation:(NSDragOperation)operation
+{
+    if ([_secondaryDataSource respondsToSelector:@selector(sourceList:draggingSession:endedAtPoint:operation:)]) {
+        return [_secondaryDataSource sourceList:self draggingSession:session endedAtPoint:screenPoint operation:operation];
+    }
+}
+
+- (void)outlineView:(NSOutlineView *)outlineView updateDraggingItemsForDrag:(id <NSDraggingInfo>)draggingInfo
+{
+    if ([_secondaryDataSource respondsToSelector:@selector(sourceList:updateDraggingItemsForDrag:)]) {
+        return [_secondaryDataSource sourceList:self updateDraggingItemsForDrag:draggingInfo];
+    }
+}
 
 #pragma mark -
 #pragma mark NSOutlineView Delegate methods
